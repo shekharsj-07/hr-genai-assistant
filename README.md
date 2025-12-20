@@ -2,7 +2,7 @@
 
 ## Overview
 This project implements an **HR Policy Assistant** using a **Retrieval-Augmented Generation (RAG)** architecture.  
-Employees can ask natural language questions about HR policies (leave, benefits, conduct, etc.), and the system provides **grounded, explainable answers** sourced from internal policy documents.
+Employees can ask natural language questions about HR policies (leave, benefits, conduct, etc.), and the system provides **grounded, explainable answers** sourced from internal policy documents ONLY.
 
 The solution is designed to be **scalable, local-first, and production-oriented**, with built-in evaluation and observability.
 
@@ -164,5 +164,6 @@ Key Design Decisions
 
 Author
 
-Shekhar
+Shekhar S. Jana
+Contact: 9087486777
 GitHub: https://github.com/shekharsj-07
