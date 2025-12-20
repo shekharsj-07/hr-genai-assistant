@@ -27,24 +27,29 @@ The solution is designed to be **scalable, local-first, and production-oriented*
 
 ## Project Structure
 hr-genai-assistant/
-├── app/
-│   └── app.py                # Chainlit application
-├── chatbot/
-│   ├── loader.py             # Multi-document ingestion
-│   ├── chunking.py           # Text chunking logic
-│   ├── embeddings.py         # Embedding backend
-│   ├── vectorstore.py        # FAISS vector store
-│   ├── rag_chain.py          # RAG pipeline
-│   ├── history.py            # SQLite chat history
-│   ├── evaluation.py         # ROUGE/BLEU + MLflow
-│   ├── ollama_utils.py       # Ollama auto-bootstrap
-│   └── llm_factory.py        # LLM backend selection
-├── data/hr_policies/
-│   └── acme_hr_policy.txt
-├── storage/
-│   └── history.db
-├── requirements.txt
-└── README.md
+    app/
+        app.py                # Chainlit application
+    chatbot/
+        loader.py             # Multi-document ingestion
+        chunking.py           # Text chunking logic
+        embeddings.py         # Embedding backend
+        vectorstore.py        # FAISS vector store
+        rag_chain.py          # RAG pipeline
+        history.py            # SQLite chat history
+        evaluation.py         # ROUGE/BLEU + MLflow
+        ollama_utils.py       # Ollama auto-bootstrap
+        llm_factory.py        # LLM backend selection
+    mlruns                    #for logging Q/A session
+        1                     #keeps every Q/A asked
+    data/hr_policies/
+        acme_hr_policy.txt    # Policy doc
+    storage/
+        vectorstore
+            index.faiss       #faiss vector store index
+            index.pkl         #metadata for faiss document mapping
+        history.db            #stores chat history (SQLite db)
+requirements.txt
+README.md
 
 
 ---
@@ -52,22 +57,37 @@ hr-genai-assistant/
 ## How to Run
 
 ### 1. Setup
+
 ```bash
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+```
 
-
-
-### 2. Run the App
+### 2. Run the app
+```bash
 chainlit run app/app.py
 
 The app will be available at:
 http://localhost:8000
 
 
+```
 
-LLM Backend Strategy
+### 3. Run the below command in a separate terminal to initiate mlflow tracking
+```bash
+mlflow ui --backend-store-uri ./mlruns --host 127.0.0.1
+```
+*use ctrl + c to quit*
+
+then use 
+
+```bash
+mlflow ui
+```
+
+
+### 4. LLM Backend Strategy
 
 The application automatically selects the best available local LLM:
 	•	Primary: Ollama (Mistral) – high quality local inference
@@ -94,13 +114,14 @@ Key Design Decisions
 
 ⸻
 
-Future Enhancements
+### Future Enhancements ###
 	•	Semantic similarity metrics
 	•	Faithfulness / grounding score
 	•	Admin dashboard for analytics
 	•	Role-based access control
 
 ⸻
+
 
 Author
 
