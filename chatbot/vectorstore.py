@@ -10,7 +10,7 @@ from chatbot.config import config
 
 class VectorStoreManager:
     """
-    Manages FAISS vector store lifecycle.
+    this block manages FAISS vector store lifecycle.
     """
 
     def __init__(self, persist_dir: Path = config.VECTORSTORE_DIR):

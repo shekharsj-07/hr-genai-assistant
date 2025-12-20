@@ -7,7 +7,7 @@ class AppConfig(BaseModel):
     DATA_DIR: Path = Path("data/hr_policies")
     VECTORSTORE_DIR: Path = Path("storage/vectorstore")
 
-    # Chunking
+    # Chunking- change as needed
     CHUNK_SIZE: int = 500
     CHUNK_OVERLAP: int = 100
 
