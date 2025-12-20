@@ -1,0 +1,36 @@
+# -----------------------------
+# Core App & UI
+# -----------------------------
+chainlit
+requests
+
+# -----------------------------
+# LangChain Core (modern)
+# -----------------------------
+langchain
+langchain-core
+langchain-community
+langchain-text-splitters
+
+# -----------------------------
+# Local LLM (Ollama)
+# -----------------------------
+langchain-ollama
+
+# -----------------------------
+# Embeddings & Vector Store
+# -----------------------------
+sentence-transformers
+faiss-cpu
+
+# -----------------------------
+# Evaluation & Observability
+# -----------------------------
+mlflow
+rouge-score
+nltk
+
+# -----------------------------
+# Utilities
+# -----------------------------
+python-dotenv
