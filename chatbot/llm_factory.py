@@ -7,7 +7,7 @@ def get_llm():
     """
     try:
         from langchain_ollama import ChatOllama
-        return ChatOllama(model="mistral", temperature=0)
+        return ChatOllama(model="mistral", temperature=0.2)
     except Exception:
         from langchain_community.llms import HuggingFacePipeline
         from transformers import pipeline

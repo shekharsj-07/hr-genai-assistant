@@ -3,7 +3,7 @@ from pathlib import Path
 import os
 
 # -----------------------------
-# Fix PYTHONPATH for Chainlit
+#PYTHONPATH for Chainlit
 # -----------------------------
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.append(str(PROJECT_ROOT))
@@ -12,10 +12,12 @@ sys.path.append(str(PROJECT_ROOT))
 os.environ["CHAINLIT_LANG"] = "en-US"
 
 # -----------------------------
-# Ollama bootstrap (safe)
+# Oloading ollama model
 # -----------------------------
 from chatbot.ollama_utils import ensure_ollama_ready
 ensure_ollama_ready()
+
+
 
 import chainlit as cl
 
@@ -26,9 +28,9 @@ from chatbot.rag_chain import HRPolicyRAG
 from chatbot.history import ChatHistoryStore
 from chatbot.evaluation import RAGEvaluator
 
-# -----------------------------
+
 # GLOBAL INITIALIZATION
-# -----------------------------
+
 loader = MultiDocumentLoader()
 docs = loader.load_documents()
 
@@ -42,15 +44,15 @@ rag = HRPolicyRAG(vectorstore)
 history_store = ChatHistoryStore()
 evaluator = RAGEvaluator()
 
-# -----------------------------
+#----------------------------
 # CHAINLIT EVENTS
-# -----------------------------
+#---------------------------
 
 @cl.on_chat_start
 async def start():
     await cl.Message(
         content=(
-            "👋 **Welcome to the HR Policy Assistant**\n\n"
+            "👋 **Welcome to the Acme HR Policy Assistant**\n\n"
             "Ask questions about:\n"
             "- Leave policies\n"
             "- Working hours\n"
@@ -65,7 +67,7 @@ async def start():
 async def handle_message(message: cl.Message):
     question = message.content
 
-    await cl.Message(content="⏳ Thinking...").send()
+    await cl.Message(content="Thinking...").send()
 
     # --- RAG Answer ---
     response = rag.answer(question)
@@ -84,7 +86,7 @@ async def handle_message(message: cl.Message):
         model_backend="ollama_or_hf_fallback",
     )
 
-    # --- Persist history ---
+    # --- Log history ---
     history_store.log(question, answer)
 
     # --- Final response to UI ---
