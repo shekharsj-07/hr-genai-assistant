@@ -64,6 +64,45 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
+
+## Local LLM Ollama Setup (Optional – Recommended)##
+Important: Ollama is optional.
+If Ollama is not installed, the application automatically falls back to a pure Python HuggingFace-based local model, so the app will still run successfully.
+
+
+macOS / Linux
+	1.	Download Ollama from the official website:
+👉 https://ollama.com/download
+	2.	Install and launch the application
+	•	macOS users must open Ollama.app once (menu bar icon should appear)
+	3.	Verify installation
+
+```bash
+ollama --version
+
+```
+
+Windows
+	1.	Download the Windows installer from:
+👉 https://ollama.com/download
+	2.	Run the installer and complete setup
+	3.	Restart your terminal (PowerShell / Command Prompt)
+	4.	Verify installation
+
+```powershell
+ollama --version
+```
+
+```bash / powershell
+
+ollama pull mistral
+ollama serve
+ollama run mistral "Hello, are you running?"
+
+```
+
+
+
 ### 2. Run the app
 ```bash
 chainlit run app/app.py
