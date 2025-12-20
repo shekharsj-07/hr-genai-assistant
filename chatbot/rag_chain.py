@@ -10,7 +10,7 @@ from chatbot.llm_factory import get_llm
 
 class HRPolicyRAG:
     """
-    Stable, local RAG pipeline using Ollama (LangChain >=0.3 compatible).
+    RAG chain for answering HR policy questions.
     """
 
     def __init__(self, vectorstore: FAISS):
@@ -24,7 +24,6 @@ class HRPolicyRAG:
         return "\n\n".join(doc.page_content for doc in docs)
 
     def answer(self, question: str) -> Dict[str, Any]:
-        # ✅ CORRECT way in new LangChain
         docs = self.retriever.invoke(question)
 
         context = self._build_context(docs)
@@ -32,7 +31,7 @@ class HRPolicyRAG:
         prompt = f"""
         You are an HR policy assistant.
         Answer the question strictly using the context below.
-        If the answer is not present, say "Not specified in policy".
+        If the answer is not present, say "Sorry, I don't have an answer to this as it is not specified in the policy".
 
         Context:
         {context}
