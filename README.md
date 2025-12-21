@@ -59,11 +59,11 @@ README.md
 ### 1. Setup
 
 ```bash
-python -m venv venv
+python -m venv venv      #the 2nd venv is you virtual environment  name-you can put anything  
 source venv/bin/activate
 pip install -r requirements.txt
 ```
-
+Note: if python or pip doesn't work, use python3 or pip3.
 
 ## Local LLM Ollama Setup (Optional – Recommended)##
 Important: Ollama is optional.

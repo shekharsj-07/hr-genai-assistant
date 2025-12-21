@@ -28,3 +28,9 @@ class ChatHistoryStore:
             (datetime.utcnow().isoformat(), question, answer)
         )
         self.conn.commit()
+
+    def fetch_all_questions(self):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT question FROM chat_history")
+        rows = cursor.fetchall()
+        return [r[0] for r in rows]

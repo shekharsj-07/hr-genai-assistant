@@ -3,24 +3,27 @@ from pathlib import Path
 import os
 
 # -----------------------------
-#PYTHONPATH for Chainlit
+# PYTHONPATH FIX (MUST BE FIRST)
 # -----------------------------
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-sys.path.append(str(PROJECT_ROOT))
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 # Optional: silence locale warning
 os.environ["CHAINLIT_LANG"] = "en-US"
 
 # -----------------------------
-# Oloading ollama model
+# OPTIONAL: Ensure Ollama ready
 # -----------------------------
 from chatbot.ollama_utils import ensure_ollama_ready
 ensure_ollama_ready()
 
-
-
+# -----------------------------
+# Normal imports AFTER path fix
+# -----------------------------
 import chainlit as cl
 
+from chatbot.faq_insights import FAQInsights
 from chatbot.loader import MultiDocumentLoader
 from chatbot.chunking import DocumentChunker
 from chatbot.vectorstore import VectorStoreManager
@@ -59,8 +62,22 @@ async def start():
             "- Benefits\n"
             "- Code of conduct\n\n"
             "_Each session is fresh. Responses are evaluated and logged._"
-        )
+            )
     ).send()
+
+        # --- FAQ Insights ---
+    past_questions = history_store.fetch_all_questions()
+    faq = FAQInsights(past_questions).top_faqs()
+
+    if faq:
+        faq_text = "📌 **Most Frequently Asked Questions**\n\n"
+        for q, count in faq.items():
+            faq_text += f"• {q} _(asked {count} times)_\n"
+
+        await cl.Message(
+            content=faq_text,
+            author="Insights"
+        ).send()
 
 
 @cl.on_message
@@ -98,3 +115,10 @@ async def handle_message(message: cl.Message):
             f"- BLEU: `{metrics['bleu']:.3f}`"
         )
     ).send()
+
+
+def fetch_all_questions(self):
+    cursor = self.conn.cursor()
+    cursor.execute("SELECT question FROM chat_history")
+    rows = cursor.fetchall()
+    return [r[0] for r in rows]
