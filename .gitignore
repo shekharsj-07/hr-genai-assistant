@@ -13,3 +13,4 @@ mlruns/
 
 # OS files
 .DS_Store
+.env
