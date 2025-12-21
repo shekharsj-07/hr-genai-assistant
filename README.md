@@ -31,25 +31,25 @@ Core Components
 Project Structure
 
 hr-genai-assistant/
-├── app/
-│   └── app.py
-├── chatbot/
-│   ├── loader.py
-│   ├── chunking.py
-│   ├── embeddings.py
-│   ├── vectorstore.py
-│   ├── rag_chain.py
-│   ├── history.py
-│   ├── faq_insights.py
-│   ├── evaluation.py
-│   ├── ollama_utils.py
-│   └── llm_factory.py
-├── data/hr_policies/
-│   └── acme_hr_policy.txt
-├── storage/
-│   └── history.db
-├── requirements.txt
-└── README.md
+   app/
+      app.py
+   chatbot/
+      loader.py
+      chunking.py
+      embeddings.py
+      vectorstore.py
+      rag_chain.py
+      history.py
+      faq_insights.py
+      evaluation.py
+      ollama_utils.py
+      llm_factory.py
+      data/hr_policies/
+│        acme_hr_policy.txt
+      storage/
+│        history.db
+      requirements.txt
+      README.md
 
 
 ## How to Run
@@ -63,7 +63,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 Windows (PowerShell):
-``` powershell
+``` shell
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
