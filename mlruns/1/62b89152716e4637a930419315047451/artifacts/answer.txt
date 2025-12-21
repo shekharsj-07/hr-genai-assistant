@@ -1,0 +1,10 @@
+ The employee benefits, as specified in the ACME CORP HR Policy Handbook, include:
+
+1. Health Insurance: Provided to all full-time employees.
+2. L&D (Learning & Development): Employees can enroll in up to 2 paid learning programs annually.
+3. Employee Assistance Program (EAP) is available for confidential counseling services.
+4. Access to mental health wellness sessions such as yoga, mental health webinars, and stress management.
+5. Confidential access to mental health counselors via the EAP program.
+6. Employees are encouraged to take mental health leave when needed, in discussion with HR.
+7. Female employees are entitled to 26 weeks of paid maternity leave.
+8. Male employees are entitled to 2 weeks of paternity leave.

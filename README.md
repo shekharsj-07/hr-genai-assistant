@@ -1,169 +1,162 @@
-# HR GenAI Assistant – RAG-based Policy Chatbot
+HR GenAI Assistant – Acme RAG Application
 
-## Overview
-This project implements an **HR Policy Assistant** using a **Retrieval-Augmented Generation (RAG)** architecture.  
-Employees can ask natural language questions about HR policies (leave, benefits, conduct, etc.), and the system provides **grounded, explainable answers** sourced from internal policy documents ONLY.
+Overview
+The Acme RAG application is an HR Policy Assistant built using a Retrieval-Augmented Generation (RAG) architecture.
+Employees can ask natural-language questions about internal HR policies (leave, benefits, working hours, code of conduct, etc.), and the system generates grounded, explainable answers strictly from the provided policy documents.
 
-The solution is designed to be **scalable, local-first, and production-oriented**, with built-in evaluation and observability.
+The application is designed to be:
+- Local-first (no paid APIs required)
+- Scalable and modular
+- Production-oriented
+- Auditable, with evaluation and usage tracking
 
----
 
-## Architecture
+Architecture Overview
 
-**Core components:**
-- **Document ingestion**: Multi-document loader (supports adding more policies)
-- **Chunking**: Paragraph-based chunking using LangChain text splitters
-- **Embeddings**: Sentence Transformers (local, open-source)
-- **Vector Store**: FAISS
-- **LLM**:
-  - Primary: Local LLM via **Ollama (Mistral)**
-  - Fallback: Pure Python HuggingFace model (no system dependency)
-- **RAG Pipeline**: Retriever + context-grounded generation
-- **Web UI**: Chainlit
-- **Persistence**: SQLite for chat history
-- **Evaluation**: ROUGE-L & BLEU logged via MLflow
+Core Components
+- Document Ingestion: Supports ingestion of one or multiple HR policy documents.
+- Chunking: Paragraph-based text chunking using LangChain text splitters.
+- Embeddings: Local sentence embeddings using Sentence Transformers.
+- Vector Store: FAISS for fast semantic retrieval.
+- Large Language Model (LLM):
+  * Primary (Recommended): Ollama with Mistral
+  * Fallback: Local HuggingFace model (pure Python, no system dependency)
+- RAG Pipeline: Retriever + context-grounded answer generation.
+- Web UI: Chainlit-based chat interface.
+- Persistence: SQLite database for chat history.
+- Evaluation & Observability: ROUGE-L and BLEU metrics logged using MLflow.
+- Insights Layer: FAQ insights derived from historical user questions.
 
----
 
-## Project Structure
+Project Structure
+
 hr-genai-assistant/
-    app/
-        app.py                # Chainlit application
-    chatbot/
-        loader.py             # Multi-document ingestion
-        chunking.py           # Text chunking logic
-        embeddings.py         # Embedding backend
-        vectorstore.py        # FAISS vector store
-        rag_chain.py          # RAG pipeline
-        history.py            # SQLite chat history
-        evaluation.py         # ROUGE/BLEU + MLflow
-        ollama_utils.py       # Ollama auto-bootstrap
-        llm_factory.py        # LLM backend selection
-    mlruns                    #for logging Q/A session
-        1                     #keeps every Q/A asked
-    data/hr_policies/
-        acme_hr_policy.txt    # Policy doc
-    storage/
-        vectorstore
-            index.faiss       #faiss vector store index
-            index.pkl         #metadata for faiss document mapping
-        history.db            #stores chat history (SQLite db)
-requirements.txt
-README.md
+├── app/
+│   └── app.py
+├── chatbot/
+│   ├── loader.py
+│   ├── chunking.py
+│   ├── embeddings.py
+│   ├── vectorstore.py
+│   ├── rag_chain.py
+│   ├── history.py
+│   ├── faq_insights.py
+│   ├── evaluation.py
+│   ├── ollama_utils.py
+│   └── llm_factory.py
+├── data/hr_policies/
+│   └── acme_hr_policy.txt
+├── storage/
+│   └── history.db
+├── requirements.txt
+└── README.md
 
-
----
 
 ## How to Run
 
-### 1. Setup
+1. Environment Setup
 
-```bash
-python -m venv venv      #the 2nd venv is you virtual environment  name-you can put anything  
+macOS / Linux:
+``` bash 
+python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
-Note: if python or pip doesn't work, use python3 or pip3.
+Windows (PowerShell):
+``` powershell
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+```
+Note: If python or pip does not work, use python3 or pip3.
 
-## Local LLM Ollama Setup (Optional – Recommended)##
-Important: Ollama is optional.
-If Ollama is not installed, the application automatically falls back to a pure Python HuggingFace-based local model, so the app will still run successfully.
+2. Local LLM Setup – Ollama (Optional but Recommended)
 
+Important:
+Ollama is optional. If Ollama is not installed or running, the application automatically falls back to a local HuggingFace model. No API keys are required.
 
-macOS / Linux
-	1.	Download Ollama from the official website:
-👉 https://ollama.com/download
-	2.	Install and launch the application
-	•	macOS users must open Ollama.app once (menu bar icon should appear)
-	3.	Verify installation
+macOS / Linux:
 
+1. Download Ollama from https://ollama.com/download
+2. Install and launch Ollama (macOS users must open Ollama.app once)
+3. Verify installation:
+   ollama --version
+
+Windows:
+1. Download the Windows installer from https://ollama.com/download
+2. Run the installer and complete setup
+3. Restart PowerShell
+4. Verify installation:
+   ollama --version
+
+Download and run Mistral (one-time):
 ```bash
-ollama --version
-
-```
-
-Windows
-	1.	Download the Windows installer from:
-👉 https://ollama.com/download
-	2.	Run the installer and complete setup
-	3.	Restart your terminal (PowerShell / Command Prompt)
-	4.	Verify installation
-
-```powershell
-ollama --version
-```
-
-```bash / powershell
-
 ollama pull mistral
-ollama serve
 ollama run mistral "Hello, are you running?"
-
 ```
+Note:
+Ollama runs as a background service. Do not run ollama serve if the service is already running.
 
-
-
-### 2. Run the app
+3. Run the Application
 ```bash
 chainlit run app/app.py
+```
 
-The app will be available at:
+The application will be available at:
 http://localhost:8000
 
+4. MLflow Tracking (Optional)
 
-```
-
-### 3. Run the below command in a separate terminal to initiate mlflow tracking
-```bash
+In a separate terminal:
+``` bash
 mlflow ui --backend-store-uri ./mlruns --host 127.0.0.1
-```
-*use ctrl + c to quit*
-
-then use 
-
-```bash
 mlflow ui
+
+
+Open:
+http://127.0.0.1:5000
+
 ```
 
 
-### 4. LLM Backend Strategy
+## FAQ Insights
 
-The application automatically selects the best available local LLM:
-	•	Primary: Ollama (Mistral) – high quality local inference
-	•	Fallback: HuggingFace local model – pure Python, no system install
+On application startup, the system displays a list of the most frequently asked HR questions.
+These insights are derived by analyzing historical user queries stored in the SQLite database and grouping semantically similar questions.
 
-This ensures the app runs out-of-the-box in most environments.
-
-⸻
-
-Evaluation & Observability
-	•	ROUGE-L F1: Measures overlap between generated answer and retrieved context
-	•	BLEU: Measures lexical precision (reported for completeness)
-	•	MLflow: Tracks metrics, parameters, and artifacts per user query
-
-Metrics are logged automatically for each question.
-
-⸻
-
-Key Design Decisions
-	•	No paid or proprietary APIs required
-	•	Modular, extensible architecture
-	•	Explicit grounding to reduce hallucinations
-	•	Transparent evaluation metrics
-
-⸻
-
-### Future Enhancements ###
-	•	Semantic similarity metrics
-	•	Faithfulness / grounding score
-	•	Admin dashboard for analytics
-	•	Role-based access control
-
-⸻
+This feature:
+- Improves discoverability
+- Provides usage insights
+- Does not affect the core RAG pipeline
 
 
-Author
+## Evaluation & Observability
+
+- ROUGE-L F1: Measures overlap between generated answers and retrieved context.
+- BLEU: Measures lexical precision (reported for completeness).
+- MLflow: Logs metrics, parameters, and artifacts per user query.
+
+Metrics are logged automatically for each interaction.
+
+
+## Key Design Decisions
+
+- No paid or proprietary APIs
+- Explicit grounding to prevent hallucinations
+- Modular, extensible architecture
+- Local-first execution for sensitive HR data
+
+
+## Future Enhancements
+
+- Semantic similarity evaluation metrics
+- Faithfulness / grounding score
+- Admin analytics dashboard
+- Role-based access control
+
+
+## Author
 
 Shekhar S. Jana
-Contact: 9087486777
 GitHub: https://github.com/shekharsj-07
+

@@ -1,0 +1,8 @@
+ Hello! In the leave policy section, you can find details about the different types of leaves available. Here are the specified leaves:
+
+- Annual Leave: Employees are entitled to 20 days of paid annual leave each calendar year.
+- Sick Leave: Employees are allowed up to 12 days of sick leave annually.
+- Maternity Leave: Female employees are entitled to 26 weeks of paid maternity leave.
+- Paternity Leave: Male employees are entitled to 2 weeks of paternity leave.
+
+So, in total, there are 4 types of leaves specified in the policy.
