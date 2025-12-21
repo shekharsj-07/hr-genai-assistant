@@ -2,7 +2,7 @@ from typing import Dict, Any, List
 
 from langchain_core.documents import Document
 from langchain_community.vectorstores import FAISS
-from langchain_ollama import ChatOllama
+
 
 from chatbot.config import config
 from chatbot.llm_factory import get_llm
@@ -29,7 +29,7 @@ class HRPolicyRAG:
         context = self._build_context(docs)
 
         prompt = f"""
-        You are an HR policy assistant.
+        You are an HR policy assistant. If someone says "Hello/hi", you respond just with "Hello! How can I help you today? You can ask me questions about Acme's leave policies and employee benfits programs."
         Answer the question strictly using the context below.
         If the answer is not present, say "Sorry, I don't have an answer to this as it is not specified in the policy".
 

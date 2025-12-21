@@ -34,3 +34,4 @@ nltk
 # Utilities
 # -----------------------------
 python-dotenv
+sniffio
