@@ -1,14 +1,14 @@
-# Welcome to Chainlit! 🚀🤖
+## Acme HR Policy Assistant
 
-Hi there, Developer! 👋 We're excited to have you on board. Chainlit is a powerful tool designed to help you prototype, debug and share applications built on top of LLMs.
+Welcome to the **HR GenAI Assistant**.
 
-## Useful Links 🔗
+You can ask questions about:
+- Leave policies
+- Compensation & benefits
+- Working hours
+- Code of conduct
+- Employee policies
 
-- **Documentation:** Get started with our comprehensive [Chainlit Documentation](https://docs.chainlit.io) 📚
-- **Discord Community:** Join our friendly [Chainlit Discord](https://discord.gg/k73SQ3FyUh) to ask questions, share your projects, and connect with other developers! 💬
+All answers are generated using **Retrieval-Augmented Generation (RAG)** and are grounded strictly in internal policy documents.
 
-We can't wait to see what you create with Chainlit! Happy coding! 💻😊
-
-## Welcome screen
-
-To modify the welcome screen, edit the `chainlit.md` file at the root of your project. If you do not want a welcome screen, just leave this file empty.
+⚠️ This assistant does not use external knowledge or public internet sources.

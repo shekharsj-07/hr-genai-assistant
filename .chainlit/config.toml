@@ -1,4 +1,12 @@
 [project]
+name = "HR GenAI Assistant"
+description = "RAG-based HR Policy Chatbot"
+
+[ui]
+default_theme = "dark"
+hide_cot = true
+
+[project]
 # List of environment variables to be provided by each user to use the app.
 user_env = []
 
