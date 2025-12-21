@@ -1,0 +1,15 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Runtime artifacts
+storage/history.db
+faiss.index
+index.pkl
+mlruns/
+
+# OS files
+.DS_Store
