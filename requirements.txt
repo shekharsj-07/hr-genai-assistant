@@ -1,21 +1,19 @@
 # -----------------------------
-# Core App & UI
+# Core UI
 # -----------------------------
 chainlit==1.3.0
 requests
+python-dotenv
 pydantic==1.10.13
-# -----------------------------
-# LangChain Core (modern)
-# -----------------------------
-langchain
-langchain-core
-langchain-community
-langchain-text-splitters
+sniffio
 
 # -----------------------------
-# Local LLM (Ollama)
+# LangChain (STABLE 0.1.x stack)
 # -----------------------------
-langchain-ollama
+langchain==0.1.20
+langchain-core==0.1.52
+langchain-community==0.0.38
+langchain-text-splitters==0.0.1
 
 # -----------------------------
 # Embeddings & Vector Store
@@ -29,9 +27,3 @@ faiss-cpu
 mlflow
 rouge-score
 nltk
-
-# -----------------------------
-# Utilities
-# -----------------------------
-python-dotenv
-sniffio

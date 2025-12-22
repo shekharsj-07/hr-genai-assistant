@@ -14,9 +14,14 @@ os.environ["CHAINLIT_LANG"] = "en-US"
 
 # -----------------------------
 # OPTIONAL: Ensure Ollama ready
+# (Safe: will NOT break if Ollama is absent)
 # -----------------------------
-from chatbot.ollama_utils import ensure_ollama_ready
-ensure_ollama_ready()
+try:
+    from chatbot.ollama_utils import ensure_ollama_ready
+    ensure_ollama_ready()
+except Exception:
+    # Ollama is optional – fallback will be used
+    pass
 
 # -----------------------------
 # Normal imports AFTER path fix
@@ -32,27 +37,39 @@ from chatbot.history import ChatHistoryStore
 from chatbot.evaluation import RAGEvaluator
 
 
+# -----------------------------
 # GLOBAL INITIALIZATION
+# -----------------------------
 
+# Load HR policy documents
 loader = MultiDocumentLoader()
 docs = loader.load_documents()
 
+# Chunk documents
 chunker = DocumentChunker()
 chunks = chunker.chunk_documents(docs)
 
+# Vector store (FAISS)
 vs_manager = VectorStoreManager()
 vectorstore = vs_manager.get_or_create(chunks)
 
+# RAG pipeline (internally uses llm_factory → Ollama OR HF)
 rag = HRPolicyRAG(vectorstore)
+
+# Persistence & evaluation
 history_store = ChatHistoryStore()
 evaluator = RAGEvaluator()
 
-#----------------------------
+# ----------------------------
 # CHAINLIT EVENTS
-#---------------------------
+# ----------------------------
 
 @cl.on_chat_start
 async def start():
+    """
+    Triggered when a new chat session starts.
+    """
+
     await cl.Message(
         content=(
             "👋 **Welcome to the Acme HR Policy Assistant**\n\n"
@@ -62,10 +79,12 @@ async def start():
             "- Benefits\n"
             "- Code of conduct\n\n"
             "_Each session is fresh. Responses are evaluated and logged._"
-            )
+        )
     ).send()
 
-        # --- FAQ Insights ---
+    # -------------------------
+    # FAQ Insights (from history)
+    # -------------------------
     past_questions = history_store.fetch_all_questions()
     faq = FAQInsights(past_questions).top_faqs()
 
@@ -82,31 +101,50 @@ async def start():
 
 @cl.on_message
 async def handle_message(message: cl.Message):
+    """
+    Triggered for every user message.
+    """
+
     question = message.content
 
+    # Immediate feedback to UI
     await cl.Message(content="Thinking...").send()
 
-    # --- RAG Answer ---
+    # -------------------------
+    # RAG Answer Generation
+    # -------------------------
+    # Internally:
+    # Retriever → Context → llm_factory → Ollama OR HF fallback
     response = rag.answer(question)
-    answer = response["answer"]
 
-    # --- Reference text for evaluation ---
+    answer = response["answer"]
+    sources = response.get("sources", [])
+
+    # -------------------------
+    # Reference text for evaluation
+    # -------------------------
     reference_text = "\n".join(
-        doc.page_content for doc in response["sources"]
+        doc.page_content for doc in sources
     )
 
-    # --- MLflow Evaluation ---
+    # -------------------------
+    # MLflow Evaluation
+    # -------------------------
     metrics = evaluator.evaluate(
         question=question,
         answer=answer,
         reference_text=reference_text,
-        model_backend="ollama_or_hf_fallback",
+        model_backend="auto_ollama_or_hf",
     )
 
-    # --- Log history ---
+    # -------------------------
+    # Persist chat history
+    # -------------------------
     history_store.log(question, answer)
 
-    # --- Final response to UI ---
+    # -------------------------
+    # Final response to UI
+    # -------------------------
     await cl.Message(
         content=(
             f"{answer}\n\n"
@@ -115,10 +153,3 @@ async def handle_message(message: cl.Message):
             f"- BLEU: `{metrics['bleu']:.3f}`"
         )
     ).send()
-
-
-def fetch_all_questions(self):
-    cursor = self.conn.cursor()
-    cursor.execute("SELECT question FROM chat_history")
-    rows = cursor.fetchall()
-    return [r[0] for r in rows]

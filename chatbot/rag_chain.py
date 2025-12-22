@@ -3,47 +3,64 @@ from typing import Dict, Any, List
 from langchain_core.documents import Document
 from langchain_community.vectorstores import FAISS
 
-
 from chatbot.config import config
-from chatbot.llm_factory import get_llm
+from chatbot.llm_factory import generate_response
 
 
 class HRPolicyRAG:
     """
-    RAG chain for answering HR policy questions.
+    Retrieval-Augmented Generation (RAG) chain
+    for answering HR policy questions.
     """
 
     def __init__(self, vectorstore: FAISS):
+        # Retriever setup
         self.retriever = vectorstore.as_retriever(
             search_kwargs={"k": config.TOP_K}
         )
 
-        self.llm = get_llm()
-
     def _build_context(self, docs: List[Document]) -> str:
+        """
+        Combine retrieved documents into a single context string.
+        """
         return "\n\n".join(doc.page_content for doc in docs)
 
     def answer(self, question: str) -> Dict[str, Any]:
+        """
+        Generate an answer for the given question using RAG.
+        """
+        # Retrieve relevant documents
         docs = self.retriever.invoke(question)
 
+        # Build context
         context = self._build_context(docs)
 
+        # Prompt template
         prompt = f"""
-        You are an HR policy assistant. If someone says "Hello/hi", you respond just with "Hello! How can I help you today? You can ask me questions about Acme's leave policies and employee benfits programs."
-        Answer the question strictly using the context below.
-        If the answer is not present, say "Sorry, I don't have an answer to this as it is not specified in the policy".
+You are an HR policy assistant for Acme Corporation.
 
-        Context:
-        {context}
+Rules:
+- If the user says "hello", "hi", or greets you, respond ONLY with:
+  "Hello! How can I help you today? You can ask me questions about Acme's leave policies and employee benefits programs."
+- Answer the question strictly using the context below.
+- If the answer is NOT present in the context, respond with:
+  "Sorry, I don't have an answer to this as it is not specified in the policy."
 
-        Question:
-        {question}
-        """
+Context:
+{context}
 
-        answer = self.llm.invoke(prompt).content
+Question:
+{question}
+
+Answer:
+"""
+
+        # Generate response (Ollama or HuggingFace fallback)
+        answer, backend_used = generate_response(prompt)
 
         return {
             "question": question,
-            "answer": answer,
+            "answer": answer.strip(),
             "sources": docs,
+            "backend": backend_used,
         }

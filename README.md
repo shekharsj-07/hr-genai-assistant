@@ -39,6 +39,8 @@ hr-genai-assistant/
       embeddings.py
       vectorstore.py
       rag_chain.py
+      hf_client.py
+      ollama_client.py
       history.py
       faq_insights.py
       evaluation.py
