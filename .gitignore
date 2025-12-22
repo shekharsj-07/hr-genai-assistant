@@ -2,14 +2,18 @@
 .env
 venv/
 
-# Chainlit runtime
+# Chainlit
 .chainlit/
 
-# MLflow
+# Runtime storage
+storage/
 mlruns/
 mlflow.db
 
-# Python cache
+# Editor
+.vscode/
+
+# Python
 __pycache__/
 *.pyc
 
