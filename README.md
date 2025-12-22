@@ -11,6 +11,27 @@ The application is designed to be:
 - Auditable, with evaluation and usage tracking
 
 
+
+## PYTHON 3.10.x recommended ##
+
+To install via homebrew:
+
+install homebrew if not installed: 
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+```
+
+Then, install python 3.10.x
+
+```bash
+
+brew install python@3.10
+brew link --overwrite python@3.10
+
+```
+
 Architecture Overview
 
 Core Components
