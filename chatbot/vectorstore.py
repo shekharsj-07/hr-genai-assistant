@@ -1,40 +1,40 @@
 from pathlib import Path
-from typing import List
-
-from langchain_core.documents import Document
 from langchain_community.vectorstores import FAISS
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
-from chatbot.embeddings import get_embeddings
-from chatbot.config import config
+
+VECTORSTORE_PATH = Path("storage/vectorstore")
 
 
 class VectorStoreManager:
-    """
-    this block manages FAISS vector store lifecycle.
-    """
-
-    def __init__(self, persist_dir: Path = config.VECTORSTORE_DIR):
-        self.persist_dir = persist_dir
-        self.persist_dir.mkdir(parents=True, exist_ok=True)
-        self.embeddings = get_embeddings()
-
-    def build_vectorstore(self, chunks: List[Document]) -> FAISS:
-        vectorstore = FAISS.from_documents(
-            documents=chunks,
-            embedding=self.embeddings
+    def __init__(self):
+        self.embedding = HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-MiniLM-L6-v2"
         )
 
-        vectorstore.save_local(str(self.persist_dir))
+    def get_or_create(self, documents):
+        if VECTORSTORE_PATH.exists():
+            try:
+                return self.load_vectorstore()
+            except Exception as e:
+                print("⚠️ Failed to load existing vectorstore. Rebuilding...")
+                print(e)
+                return self.create_vectorstore(documents)
+        else:
+            return self.create_vectorstore(documents)
+
+    def create_vectorstore(self, documents):
+        vectorstore = FAISS.from_documents(
+            documents=documents,
+            embedding=self.embedding,
+        )
+        VECTORSTORE_PATH.mkdir(parents=True, exist_ok=True)
+        vectorstore.save_local(VECTORSTORE_PATH)
         return vectorstore
 
-    def load_vectorstore(self) -> FAISS:
+    def load_vectorstore(self):
         return FAISS.load_local(
-            str(self.persist_dir),
-            embeddings=self.embeddings,
-            allow_dangerous_deserialization=True
+            VECTORSTORE_PATH,
+            embeddings=self.embedding,
+            allow_dangerous_deserialization=True,
         )
-
-    def get_or_create(self, chunks: List[Document]) -> FAISS:
-        if any(self.persist_dir.iterdir()):
-            return self.load_vectorstore()
-        return self.build_vectorstore(chunks)
