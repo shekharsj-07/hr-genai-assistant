@@ -1,30 +1,17 @@
-# Python
-venv/
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Environment variables
+# Environment
 .env
+venv/
 
-# Chainlit (local machine config)
+# Chainlit runtime
 .chainlit/
 
 # MLflow
 mlruns/
+mlflow.db
 
-# Local storage / vector DB
-storage/
+# Python cache
+__pycache__/
+*.pyc
 
-# OS files
+# OS
 .DS_Store
-Thumbs.db
-
-# IDE
-.vscode/
-.idea/
-
-
-
-
