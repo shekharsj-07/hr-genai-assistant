@@ -1,6 +1,6 @@
 from transformers import pipeline
 
-# Load once (VERY IMPORTANT)
+# Load
 _hf_pipeline = pipeline(
     "text-generation",
     model="google/flan-t5-base",
