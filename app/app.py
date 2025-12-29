@@ -3,7 +3,7 @@ from pathlib import Path
 import os
 
 # -----------------------------
-# PYTHONPATH FIX (MUST BE FIRST)
+# Path initialization
 # -----------------------------
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
@@ -13,18 +13,17 @@ if str(PROJECT_ROOT) not in sys.path:
 os.environ["CHAINLIT_LANG"] = "en-US"
 
 # -----------------------------
-# OPTIONAL: Ensure Ollama ready
-# (Safe: will NOT break if Ollama is absent)
+# OPTIONAL: Ensure Ollama is ready
 # -----------------------------
 try:
     from chatbot.ollama_utils import ensure_ollama_ready
     ensure_ollama_ready()
 except Exception:
-    # Ollama is optional – fallback will be used
+    # Ollama is optional – fallback will be used in case it isn't
     pass
 
 # -----------------------------
-# Normal imports AFTER path fix
+# Imports
 # -----------------------------
 import chainlit as cl
 
@@ -53,10 +52,10 @@ chunks = chunker.chunk_documents(docs)
 vs_manager = VectorStoreManager()
 vectorstore = vs_manager.get_or_create(chunks)
 
-# RAG pipeline (internally uses llm_factory → Ollama OR HF)
+# RAG pipeline (internally uses llm_factory → Ollama OR HuggingFace HF)
 rag = HRPolicyRAG(vectorstore)
 
-# Persistence & evaluation
+# History storing & evaluation
 history_store = ChatHistoryStore()
 evaluator = RAGEvaluator()
 
@@ -113,8 +112,6 @@ async def handle_message(message: cl.Message):
     # -------------------------
     # RAG Answer Generation
     # -------------------------
-    # Internally:
-    # Retriever → Context → llm_factory → Ollama OR HF fallback
     response = rag.answer(question)
 
     answer = response["answer"]
@@ -138,7 +135,7 @@ async def handle_message(message: cl.Message):
     )
 
     # -------------------------
-    # Persist chat history
+    # Storing chat history
     # -------------------------
     history_store.log(question, answer)
 
