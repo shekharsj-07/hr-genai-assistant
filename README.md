@@ -173,7 +173,6 @@ Metrics are logged automatically for each interaction.
 ## Future Enhancements
 
 - Semantic similarity evaluation metrics
-- Faithfulness / grounding score
 - Admin analytics dashboard
 - Role-based access control
 
